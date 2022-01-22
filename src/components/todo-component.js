@@ -10,12 +10,52 @@ export class Todo extends LitElement {
   static get styles() {
     return css`
       #todo-wrapper {
-        max-width: 800px;
-        margin: 0 auto;
+        width: 50%;
         display: flex;
-        justify-content: center;
+
         align-items: center;
         flex-direction: column;
+        background: #f5f5f5;
+        position: absolute;
+        top: 20%;
+        left: 50%;
+        transform: translateX(-50%);
+        padding: 40px;
+        border-radius: 40px;
+      }
+      .input-container {
+        width: 100%;
+        display: flex;
+        justify-content: center;
+        margin: 0 auto;
+      }
+      .input-container input {
+        width: 60%;
+        border: none;
+        font-size: 1em;
+        border: 1px solid blue;
+        border-radius: 10px;
+        background: #e4e7ee;
+      }
+      .input-container button {
+        margin-left: 20px;
+        font-size: 0.8em;
+        padding: 10px;
+        border: none;
+        border-radius: 10px;
+        background: #4c6ab4;
+        color: white;
+      }
+      .todo-lists {
+        margin-top: 10px;
+        margin-bottom: 20px;
+      }
+      .todo-item {
+        margin-top: 20px;
+      }
+      .todo-item label {
+        margin-left: 10px;
+        font-size: 1.2em;
       }
       .todo-lists {
         width: 100%;
@@ -23,6 +63,15 @@ export class Todo extends LitElement {
       #filters {
         display: flex;
         flex-direction: row;
+      }
+      #clear-todos {
+        margin-left: 20px;
+        font-size: 0.8em;
+        padding: 10px;
+        border: none;
+        border-radius: 10px;
+        background: red;
+        color: white;
       }
     `;
   }
@@ -45,8 +94,8 @@ export class Todo extends LitElement {
   render() {
     return html`
       <div id="todo-wrapper">
-        <h1>Create a TODO</h1>
-        <div class="input-container">
+        <h1>Create TODO's</h1>
+        <div class="input-container" @keyup=${this.handleEnterInput}>
           <input
             placeholder="Task"
             .value=${this.task}
@@ -70,11 +119,12 @@ export class Todo extends LitElement {
           )}
         </div>
         <div id="filters">
-          <div id="radio-btn-group">
+          <div id="radio-btn-group" style="margin-top:5px">
             ${Object.values(toDoFilter).map(
               (filter) =>
                 html`
                   <input
+                    class="radio-btns"
                     name="filters"
                     type="radio"
                     value=${filter}
@@ -83,10 +133,17 @@ export class Todo extends LitElement {
                 `
             )}
           </div>
-          <button @click=${this.handleRemove}>Clear Completed</button>
+          <button id="clear-todos" @click=${this.handleRemove}>
+            Clear Completed
+          </button>
         </div>
       </div>
     `;
+  }
+  handleEnterInput(e) {
+    if (e.key === 'Enter') {
+      this.addTodo();
+    }
   }
   storeTodo(todos) {
     localStorage.setItem('todos', JSON.stringify(todos));
